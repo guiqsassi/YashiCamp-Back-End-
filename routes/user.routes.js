@@ -13,7 +13,7 @@ user.post("/register", async(req,res)=>{
    let   {email, password, username} = req.body
 
     const userAlreadyExists = await User.findOne({where: {email}}).catch((err)=>{console.log(err);})    
-    
+
     userAlreadyExists?
 
 

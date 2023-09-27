@@ -1,5 +1,5 @@
 import dotenv from "dotenv"
-import { Sequelize } from "sequelize"
+import { Model, Sequelize } from "sequelize"
 
 dotenv.config({path: './config/config.env'})
 
@@ -9,7 +9,8 @@ const connection = new Sequelize(
     process.env.MYSQL_USER,
     process.env.MYSQL_PASSWORD,{
         dialect: "mysql",
-        host: process.env.MYSQL_HOST
+        host: process.env.MYSQL_HOST,
+        
     }
 )
 
