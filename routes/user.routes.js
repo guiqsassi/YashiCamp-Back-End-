@@ -1,5 +1,5 @@
 import express from "express";
-import User from "../models/user.js";
+import {User} from "../models/user.js";
 import bcrypt from "bcrypt"
 import dotenv from "dotenv"
 import jwt from "jsonwebtoken";
@@ -30,9 +30,10 @@ user.post("/register", async(req,res)=>{
 user.post("/login", async(req,res)=>{
     let {email, password} = req.body
 
-    const userAlreadyExists = await User.findOne({where: {email}}).catch((err)=>{console.log(err);})    
+    const userAlreadyExists = await User.findOne({where: {email}}).catch((err)=>{res.send(err)})    
 
-    const logged = await bcrypt.compare(password, userAlreadyExists.password);
+    if(userAlreadyExists){
+    const logged = await bcrypt.compare(password, userAlreadyExists.password).catch((err)=>{res.send(err)})    
 
     const token = jwt.sign({
         userId: userAlreadyExists.id
@@ -41,12 +42,73 @@ user.post("/login", async(req,res)=>{
 
 
     res.json(token)
+}
+    else{
+        res.send("usuário não registrado")
+    }
 })
 
 user.get("/GetUser", jwtAuth ,async(req,res)=>{
     const id = parseInt(req.body.id)
     const userSearch = await User.findByPk(id).catch((err)=>{ res.json({err: err, message: "deu errado"}).status(401)})
     if(userSearch){res.json(userSearch) }
+})
+
+user.delete("/delete", jwtAuth ,async(req, res)=>{
+    const id = req.body
+
+    const userExists = await User.findOne({
+        where:id
+    })
+
+    userExists?
+
+    await User.destroy({
+        where: id
+    }).then(()=>{ 
+        res.send("Deletado com sucesso")
+    }).catch((err)=>{
+res.send("deu ruim")
+    }) 
+:
+res.send("Não foi possivel encontrar um user com este Id")
+})
+
+user.put("/update", jwtAuth, async(req,res)=>{
+    let   {id, email, password, username} = req.body
+    console.log(email, password, username);
+
+    const userExists = await User.findOne({
+        where: {id}
+    })
+    console.log(userExists);
+    
+    if(!email){
+        email = userExists.email}
+    if(!username){
+        username = userExists.username}
+    if(!password){
+        password = userExists.password}
+    
+        await bcrypt.genSalt(10,(err , salt)=>{
+            bcrypt.hash(password, salt, (err, hash)=>{
+                password = hash
+            })
+        })
+    
+    userExists?
+        
+    await User.update({
+        username: {username}, email: {email}, password: {password}
+    },
+    {where:id}).then(()=>{ 
+        res.send("update com sucesso")
+    }).catch((err)=>{
+    res.send("deu ruim")
+    }) :
+    res.send("Não foi possivel encontrar um user com este Id")
+
+
 })
 
 export default user

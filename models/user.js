@@ -1,9 +1,8 @@
 import { DataTypes} from "sequelize";
 
 import connection from "../config/connection.js";
-import Post from "./post.js";
 
-const User = connection.define("user", {
+export const User = connection.define("user", {
     email:{
      type: DataTypes.STRING,
      allowNull: false,
@@ -17,5 +16,3 @@ const User = connection.define("user", {
      allowNull: false,
     }
  },{timestamps:false})
-    
- export default User

@@ -1,20 +1,26 @@
-import { DataTypes } from "sequelize";
+import { DataTypes} from "sequelize";
+
 import connection from "../config/connection.js";
-import User from "./user.js";
 
-    const Post = connection.define("Post",{
-        tittle:{
-            type: DataTypes.STRING,
-            allowNull: false
-        },
-        text:{
-            type: DataTypes.TEXT,
-            allowNull: false
-        }
+import { User } from "./user.js";
+
+
+ export const Post = connection.define("Post",{
+    tittle:{
+        type: DataTypes.STRING,
+        allowNull: false
     },
+    text:{
+        type: DataTypes.TEXT,
+        allowNull: false
+    }
+},
 
-    ).belongsTo(User, {
-        foreignKey: "user_id"
-    })
+)
+Post.belongsTo(User, {
+    foreignKey: {
+        name:"user_id",
+        allowNull: false
+    }
+})
 
-    export default Post
