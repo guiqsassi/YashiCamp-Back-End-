@@ -76,37 +76,42 @@ res.send("Não foi possivel encontrar um user com este Id")
 
 user.put("/update", jwtAuth, async(req,res)=>{
     let   {id, email, password, username} = req.body
-    console.log(email, password, username);
-
-    const userExists = await User.findOne({
-        where: {id}
-    })
-    console.log(userExists);
-    
-    if(!email){
-        email = userExists.email}
-    if(!username){
-        username = userExists.username}
-    if(!password){
-        password = userExists.password}
-    
-        await bcrypt.genSalt(10,(err , salt)=>{
-            bcrypt.hash(password, salt, (err, hash)=>{
-                password = hash
-            })
+    if(id !== undefined){
+        const userExists = await User.findOne({
+            where: {id}
         })
     
-    userExists?
+        if(email == undefined){
+            email = userExists.email}
+        if(username == undefined){
+            username = userExists.username}
+        if(password == undefined){
+            password = userExists.password}
         
-    await User.update({
-        username: {username}, email: {email}, password: {password}
-    },
-    {where:id}).then(()=>{ 
-        res.send("update com sucesso")
-    }).catch((err)=>{
-    res.send("deu ruim")
-    }) :
-    res.send("Não foi possivel encontrar um user com este Id")
+            await bcrypt.genSalt(10,(err , salt)=>{
+                bcrypt.hash(password, salt, (err, hash)=>{
+                    password = hash
+                })
+            })
+            console.log(email, password, username);
+    
+        userExists?
+            
+        await User.update({
+            username: username, email: email, password: password
+        },
+        {where: {id: id}}).then(()=>{ 
+            res.send("update com sucesso")
+        }).catch((err)=>{
+            console.log(err)
+            res.send(err)
+        }) :
+        res.send("Não foi possivel encontrar um user com este Id")
+    
+    }
+
+        res.send("Id inválido")
+
 
 
 })

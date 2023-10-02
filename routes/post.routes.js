@@ -1,14 +1,14 @@
 import express from "express";
 import jwtAuth from "../config/verifyToken.js";
-import {Post} from "../models/post.js";
+import {Review} from "../models/Review.js";
 
 const post = express.Router()
 
     post.post("/newPost",jwtAuth ,(req,res)=>{
         const {tittle, text, user_id} = req.body
         if(tittle && text){
-            Post.create({tittle, text, user_id}).then(()=>{ 
-                res.json({message: "Post criado com sucesso"})
+            Review.create({tittle, text, user_id}).then(()=>{ 
+                res.json({message: "Review criado com sucesso"})
                 .status(200)})
                 .catch((err)=>{ res.send(err)})
         }

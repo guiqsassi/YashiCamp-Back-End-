@@ -1,6 +1,7 @@
 import { DataTypes} from "sequelize";
 
 import connection from "../config/connection.js";
+import { CampingZone } from "./CampingZone.js";
 
 export const User = connection.define("user", {
     email:{
@@ -16,3 +17,5 @@ export const User = connection.define("user", {
      allowNull: false,
     }
  },{timestamps:false})
+
+

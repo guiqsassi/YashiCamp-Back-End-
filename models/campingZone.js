@@ -1,5 +1,5 @@
 import { DataTypes} from "sequelize";
-import { User } from "./user.js";
+import { User } from "./User.js";
 
 import connection from "../config/connection.js";
 
@@ -24,11 +24,4 @@ import connection from "../config/connection.js";
 },
 {timestamps: false}
 )
-CampingZone.belongsTo(User, {
-    foreignKey: {
-        name:"user_id",
-        allowNull: false
-    }
-})
-
 
